@@ -40,7 +40,15 @@ def csv_read_data(path):
             serial.append(data[0])
             value.append(data[-1])
     return serial, value
-
+serial = []
+complete_data = {}
+x = 0
+while x < len(filepaths):
+    y = 0
+    while y < len(filenames[x]):
+        complete_data[filepaths[x] + 'serial'], complete_data[filepaths[x]] = csv_read_data(relative_path + '/' + filepaths[x] + '/' + filenames[x][y])
+        y += 1
+    x += 1
 serial, value = csv_read_data(relative_path + '/' + filepaths[1] + '/' + filenames[1][0])
 
 #with numpy arrays
