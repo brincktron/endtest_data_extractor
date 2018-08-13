@@ -22,11 +22,11 @@ filepaths = ['CBDFull[DutMic0]',
              ]
 full_path = 'et-data/CBDHF[DutMic0]/CBDHF[DutMic0] 2018-08-01.txt'
 relative_path = 'et-data'
+
+# create all paths
 filenames = []
-x = 0
-while x < len(filepaths):
-    filenames.append(os.listdir(relative_path + '/'+ filepaths[x]))
-    x += 1
+for x in filepaths:
+    filenames.append(os.listdir(relative_path + '/' + filepaths[x]))
 
 # with csv reader arrays
 def csv_read_data(path):
@@ -53,20 +53,23 @@ def panda_read_data(path, heading):
 serial = []
 complete_data = {}
 x = 0
-
+y = 0
+filenames = []
 #with pandas
 finalDf = pd.DataFrame()
 while x < len(filepaths):
     y = 0
     while y < len(filenames[x]):
         full_path = relative_path + '/' + filepaths[x] + '/' + filenames[x][y]
-        # with pandas
-        pandaserial, finalDf[filepaths[x]] = panda_read_data(full_path, filepaths[x])
+        print y
         if y == 0:
             complete_data[filepaths[x] + 'serial'], complete_data[filepaths[x]] = csv_read_data(full_path)
+            pandaserial, finalDf[filepaths[x]] = panda_read_data(full_path, filepaths[x])
         else:
             complete_data[filepaths[x] + 'serial'].extend(csv_read_data(full_path)[0])
             complete_data[filepaths[x]].extend(csv_read_data(full_path)[1])
+            pandaserial.append(panda_read_data(full_path, filepaths[x])[0])
+            finalDf[filepaths[x]].append(panda_read_data(full_path, filepaths[x])[1])
         y += 1
     x += 1
 serial, value = csv_read_data(relative_path + '/' + filepaths[1] + '/' + filenames[1][0])
