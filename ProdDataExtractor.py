@@ -25,31 +25,29 @@ relative_path = 'et-data'
 # create all paths
 filenames = []
 full_path = []
-x = 0
-while x < len(filepaths):
-    filenames.append(os.listdir(relative_path + '/' + filepaths[x]))
+for idx, name in enumerate(filepaths):
+    filenames.append(os.listdir(relative_path + '/' + name))
     y = 0
-    while y < len(filenames[x]):
-        full_path[x] = relative_path + '/' + filepaths[x] + '/' + filenames[x][y]
-    x += 1
+    while y < len(filenames[idx]):
+        full_path.append(relative_path + '/' + name + '/' + filenames[idx][y])
+        y += 1
 
 # with pandas
-finalDf = pd.DataFrame()
 def panda_read_data(path, heading):
     pandatable = pd.read_table(path)
-    value  =pandatable[heading]
+    value = pandatable[heading]
     return value
 
-x = 0
-y = 0
-#with pandas
-finalDf = pd.DataFrame()
-while x < len(filepaths):
-    y = 0
-    if y == 0:
-        finalDf[filepaths[x]] = panda_read_data(full_path[x], filepaths[x])
-    else:
-        finalDf[filepaths[x]].append(panda_read_data(full_path, filepaths[x]))
-    x += 1
+finalDf = pd.DataFrame(columns = filepaths)
+appendwith = pd.read_table(full_path[0])[filepaths[0]]
+finalDf = finalDf.append(appendwith)
+print finalDf
+print 'lort'
+#for idx, path in enumerate(filepaths):
+#    y = 0
+#    while y < len(filenames[idx]):
+#        finalDf.append(panda_read_data(full_path[idx+y], filenames[idx][y])
+#        y += 1
 
-print hej
+
+print finalDf
