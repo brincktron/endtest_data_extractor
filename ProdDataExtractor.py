@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sys
 
 # list of single-number rating folders
 filepaths = ['CBDFull[DutMic0]',
@@ -46,6 +47,8 @@ complete = panda_read_data(full_path[0])
 for paths in full_path[1:]:
     temp_data = panda_read_data(paths)
     complete = complete.merge(temp_data, on=['Serialnr', 'Date', 'Time'])
+    if complete.shape[0] != temp_data.shape[0]:
+        sys.exit('error in data format, cannot combine files')
 
 # write to
 complete.to_csv('CBD single numbers.txt', sep='\t')
