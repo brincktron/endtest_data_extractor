@@ -1,8 +1,5 @@
-import csv
 import pandas as pd
-import numpy as np
 import os
-#df.to_csv("submission2.csv", index=False)
 filepaths = ['CBDFull[DutMic0]',
              'CBDFull[DutMic1]',
              'CBDFull[DutMic1-DutMic2]',
@@ -32,22 +29,15 @@ for idx, name in enumerate(filepaths):
         full_path.append(relative_path + '/' + name + '/' + filenames[idx][y])
         y += 1
 
-# with pandas
-def panda_read_data(path, heading):
-    pandatable = pd.read_table(path)
-    value = pandatable[heading]
+def panda_read_data(path):
+    pandatable = pd.read_csv(path, sep='\t')
+    value = pandatable.iloc[:, [0,1,2, -1]]
     return value
 
-finalDf = pd.DataFrame(columns = filepaths)
-appendwith = pd.read_table(full_path[0])[filepaths[0]]
-finalDf = finalDf.append(appendwith)
-print finalDf
-print 'lort'
-#for idx, path in enumerate(filepaths):
-#    y = 0
-#    while y < len(filenames[idx]):
-#        finalDf.append(panda_read_data(full_path[idx+y], filenames[idx][y])
-#        y += 1
+complete = panda_read_data(full_path[0])
+for paths in full_path[1:]:
+    temp_data = panda_read_data(paths)
+    complete = complete.merge(temp_data, on=['Serialnr', 'Date', 'Time'])
 
 
-print finalDf
+complete.to_csv('complete.txt', sep='\t')
