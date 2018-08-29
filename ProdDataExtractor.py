@@ -24,7 +24,7 @@ filepaths = ['CBDFull[DutMic0]',
              ]
 
 # create all paths
-relative_path = 'et-data/2018-08-01_161409'
+relative_path = 'et-data'
 filenames = []
 full_path = []
 
@@ -35,26 +35,21 @@ def panda_read_data(path):
     return value
 
 # go through the selected folders and find all files within
-for idx, name in enumerate(filepaths):
-    filenames.append(os.listdir(relative_path + '/' + name))
-    full_path.append(relative_path + '/' + name + '/' + filenames[idx][0])
-    print 'reading: ' + full_path[idx]
-    complete = panda_read_data(full_path[-1])
-    y = 1
-    while y < len(filenames[idx]):
-        full_path.append(relative_path + '/' + name + '/' + filenames[idx][y])
+for idx, path in enumerate(filepaths):
+    filenames.append(os.listdir(relative_path + '/' + path))
+    # initialize empty DataFrame for each folderpath
+    complete = pd.DataFrame()
+    for name in filenames[idx]:
+        full_path.append(relative_path + '/' + path + '/' + name)
         print 'reading: ' + full_path[-1]
-        temp_data = panda_read_data(full_path[-1])
-        complete = complete.append(temp_data)
-        y += 1
+        complete = complete.append(panda_read_data(full_path[-1]))
     if idx == 0:
-        complete_structure = complete
-    if idx > 0:
-        complete_structure = complete_structure.merge(complete, on=['Serialnr', 'Date', 'Time'])
+        completeDF = complete
+    completeDF = completeDF.merge(complete, on=['Serialnr', 'Date', 'Time'])
 
 # write to
 #complete_structure.to_csv('CBD single numbers.txt', sep='\t')
-complete_structure.to_excel('CBD single numbers.xlsx')
+completeDF.to_excel('CBD single numbers.xlsx')
 
 print 'end test data extraction complete...'
-print ("\n --- %s seconds ---" % round(time.time() - start_time,3))
+print ("\n --- %s seconds ---" % round(time.time() - start_time, 3))
