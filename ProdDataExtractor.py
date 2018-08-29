@@ -31,7 +31,8 @@ full_path = []
 # a function that returns only the first, second, third and last column of the data-files
 def panda_read_data(path):
     pandatable = pd.read_csv(path, sep='\t')
-    value = pandatable.iloc[:, [0,1,2, -1]]
+    # Return the first three columns (Serialnr, Date, Time) and the last one (CBD...)
+    value = pandatable.iloc[:, [0, 1, 2, -1]]
     return value
 
 # go through the selected folders and find all files within
